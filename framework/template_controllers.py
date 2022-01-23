@@ -8,8 +8,8 @@ class BaseController:
         self.object_list = []
         self.response = '200 OK'
 
-    def __call__(self):
-        body = render(self.url, object_list=self.object_list)
+    def __call__(self, request):
+        body = render(self.url, object_list=self.object_list, request=request)
         return self.response, body.encode()
 
 

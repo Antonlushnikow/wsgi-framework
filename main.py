@@ -1,9 +1,14 @@
 from framework.wsgi import Application
-from controllers import IndexPage, AboutPage
+from controllers.page_controllers import IndexPage, AboutPage
+from controllers.front_controllers import AddToken
 
 routes = {
     '/': IndexPage(),
     '/about/': AboutPage()
 }
 
-application = Application(routes)
+front_controllers = [
+    AddToken()
+]
+
+application = Application(routes, front_controllers)
