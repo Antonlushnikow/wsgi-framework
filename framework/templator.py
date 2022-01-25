@@ -1,6 +1,8 @@
 import os
 from jinja2 import Template
-from settings import TEMPLATES
+
+
+TEMPLATES = 'templates'
 
 
 def render(template_name, **kwargs):

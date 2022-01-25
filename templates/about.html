@@ -3,13 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <title>About Page</title>
+    <style>
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #333;
+    }
+
+    li {
+      float: left;
+    }
+
+    li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    li a:hover {
+      background-color: #111;
+    }
+    </style>
 </head>
 <body>
-<h1>About Page</h1>
-<ul>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/contacts/">Contacts</a></li>
+        <li><a href="/about/">About</a></li>
+    </ul>
+    <h2>About Page</h2>
     {%- for obj in object_list %}
-    <li>{{obj.name}}</li>
+    <p>{{obj.name}}</p>
     {% endfor -%}
-</ul>
 </body>
 </html>

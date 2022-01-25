@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Main Page</title>
-    <style>
+  <meta charset="UTF-8">
+  <title>Contacts</title>
+  <style>
     ul {
       list-style-type: none;
       margin: 0;
@@ -30,11 +30,15 @@
     </style>
 </head>
 <body>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/contacts/">Contacts</a></li>
-        <li><a href="/about/">About</a></li>
-    </ul>
-    <div hidden>{{request}}</div>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/contacts/">Contacts</a></li>
+    <li><a href="/about/">About</a></li>
+  </ul>
+
+  <h2>Thank You for Your Feedback</h2>
+
+  <p>{{request.data.email}} {{request.data.msg}}</p>
+
 </body>
 </html>
