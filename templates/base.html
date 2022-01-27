@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/jquery-3.3.1.slim.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.bundle.min.js">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+    *,
+    *::after,
+    *::before {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .content {
+      flex: 1 1 auto;
+      max-width: 1000px;
+      margin-top: 50px;
+      margin-left: 50px;
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #333;
+    }
+
+    li {
+      float: left;
+    }
+
+    li a {
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    li a:hover {
+      background-color: #111;
+    }
+
+    </style>
+    {% endblock %}
+</head>
+<body>
+    <div class="wrapper">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/contacts/">Contacts</a></li>
+            <li><a href="/about/">About</a></li>
+        </ul>
+        <div class="content">{% block content %}{% endblock %}</div>
+        {% include 'footer.html' %}
+    </div>
+</body>
+</html>
