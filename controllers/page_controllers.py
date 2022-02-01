@@ -27,3 +27,18 @@ class ContactsPage(BaseController):
 
         body = render(self.url, object_list=self.object_list, request=request)
         return self.response, body.encode()
+
+
+class AddCourseCategory(BaseController):
+    def __init__(self):
+        super().__init__()
+
+    def __call__(self, request):
+        if request['method'] == 'POST':
+            self.url = 'categories.html'
+            print(f'got message from {request["data"]["email"]}: {request["data"]["msg"]}')
+        else:
+            self.url = 'new-category.html'
+
+        body = render(self.url, object_list=self.object_list, request=request)
+        return self.response, body.encode()
