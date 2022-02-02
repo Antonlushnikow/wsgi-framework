@@ -1,5 +1,6 @@
 from framework.template_controllers import BaseController
 from framework.templator import render
+from models.models import Student, CourseCategory
 
 
 class IndexPage(BaseController):
@@ -29,6 +30,17 @@ class ContactsPage(BaseController):
         return self.response, body.encode()
 
 
+class CategoriesPage(BaseController):
+    def __init__(self):
+        super().__init__()
+        self.url = 'categories.html'
+
+    def __call__(self, request):
+        data = CourseCategory.get_all()
+        body = render(self.url, data=data, request=request)
+        return self.response, body.encode()
+
+
 class AddCourseCategory(BaseController):
     def __init__(self):
         super().__init__()
@@ -36,7 +48,6 @@ class AddCourseCategory(BaseController):
     def __call__(self, request):
         if request['method'] == 'POST':
             self.url = 'categories.html'
-            print(f'got message from {request["data"]["email"]}: {request["data"]["msg"]}')
         else:
             self.url = 'new-category.html'
 

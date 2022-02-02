@@ -13,35 +13,47 @@ def save_data(filename, json_data):
 
 
 class CRUD:
+    @classmethod
+    def get_all(cls):
+        return load_data(FILES[cls.__name__])
+
     @staticmethod
-    def create(person_type: str, data: dict):
-        json_data = load_data(FILES[person_type])
+    def save_to_file(model, data):
+        json_data = load_data(FILES[model])
         json_data.append(data)
-        save_data(FILES[person_type], json_data)
-
-    @staticmethod
-    def get_all(person_type: str):
-        return load_data(FILES[person_type])
+        save_data(FILES[model], json_data)
 
 
+class BaseModel(CRUD):
+    def save(self):
+        self.save_to_file(self.__class__.__name__, self.__dict__)
 
-class Person(abc.ABC, CRUD):
+
+class Person(BaseModel):
     def __init__(self, firstname, lastname, info=None):
         self.firstname = firstname
         self.lastname = lastname
         self.info = info
 
+    def __str__(self):
+        return f'{self.firstname} {self.lastname}'
+
 
 class Student(Person):
-    pass
+    def __init__(self, firstname, lastname, info=None):
+        super().__init__(firstname, lastname, info)
+        self._type = 'students'
 
 
 class Teacher(Person):
-    pass
+    def __init__(self, firstname, lastname, info=None):
+        super().__init__(firstname, lastname, info)
+        self._type = 'teachers'
 
 
-class CourseCategory:
-    pass
+class CourseCategory(BaseModel):
+    def __init__(self, title):
+        self.title = title
 
 
 class Course:
@@ -49,10 +61,8 @@ class Course:
 
 
 FILES = {
-    'students': 'students.json',
-    'teachers': 'teachers.json',
+    'Student': 'students.json',
+    'Teacher': 'teachers.json',
+    'CourseCategory': 'categories.json',
+    'Course': 'courses.json',
 }
-
-Student.create('students', {'name': 'Anton', 'surname': 'Lushnikov'})
-students = Student.get_all('students')
-print(students)
