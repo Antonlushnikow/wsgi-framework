@@ -1,13 +1,17 @@
-import abc
 import json
 
 
+JSON_PATH = 'data'
+
+
 def load_data(filename):
+    filename = f'{JSON_PATH}/{filename}'
     with open(filename) as f:
         return json.load(f)
 
 
 def save_data(filename, json_data):
+    filename = f'{JSON_PATH}/{filename}'
     with open(filename, 'w') as f:
         json.dump(json_data, f, indent=4)
 
@@ -52,12 +56,23 @@ class Teacher(Person):
 
 
 class CourseCategory(BaseModel):
-    def __init__(self, title):
+    def __init__(self, title, short_title, description):
         self.title = title
+        self.short_title = short_title
+        self.description = description
+
+    def __str__(self):
+        return f'{self.title}'
 
 
-class Course:
-    pass
+class Course(BaseModel):
+    def __init__(self, title, category, description):
+        self.title = title
+        self.category = category
+        self.description = description
+
+    def __str__(self):
+        return f'{self.title}'
 
 
 FILES = {

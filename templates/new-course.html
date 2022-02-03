@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}About Page{% endblock %}
+{% block content %}
+  <h2>Новый курс</h2>
+
+  <form action="/courses/" method="post">
+    <label for="title">Полное название:</label><br>
+    <input type="text" id="title" name="title" value=""><br>
+    <label for="category">Категория:</label><br>
+    <select id="category" name="category">
+      {% for item in data %}
+      <option> {{ item.title }} </option>
+      {% endfor %}
+    </select><br>
+    <label for="desc">Описание:</label><br>
+    <textarea id="desc" name="desc"></textarea><br><br>
+    <input type="submit" value="Создать">
+  </form>
+
+{% endblock %}

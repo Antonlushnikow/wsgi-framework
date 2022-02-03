@@ -1,4 +1,8 @@
 from framework.templator import render
+from framework.utils import Logger
+
+
+logger_browsing = Logger('logger_browsing')
 
 
 class BaseController:
@@ -9,6 +13,7 @@ class BaseController:
         self.response = '200 OK'
 
     def __call__(self, request):
+        logger_browsing.log(f'Opened {self.url}')
         body = render(self.url, object_list=self.object_list, request=request)
         return self.response, body.encode()
 

@@ -10,3 +10,5 @@ def render(template_name, **kwargs):
     env.loader = FileSystemLoader(TEMPLATES)
     template = env.get_template(template_name)
     return template.render(**kwargs)
+
+

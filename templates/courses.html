@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Categories{% endblock %}
 {% block content %}
-    <h2>Categories</h2>
+    <h2>Курсы</h2>
     <div class="row">
      {% for item in data %}
         <div class="card col-3" style="width: 25rem;">
           <div class="card-body">
             <h5 class="card-title">{{ item.title }}</h5>
             <p class="card-text">{{ item.description }}</p>
-            <a href="{{ item.short_title }}/" class="btn btn-primary">Выбрать курс</a>
+            <a href="" class="btn btn-primary">Записаться</a>
           </div>
         </div>
      {% endfor %}
     </div>
-    <a href="/addcategory/" class="btn btn-primary">Добавить категорию</a>
+    <a href="/addcourse/" class="btn btn-primary">Добавить курс</a>
 {% endblock %}
