@@ -32,5 +32,6 @@ class Application:
         else:
             controller = NotFoundPage()
         code, body = controller(request)
+
         start_response(code, [('Content-Type', 'text/html')])
         return [body]

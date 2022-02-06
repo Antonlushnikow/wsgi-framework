@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% block title %}About Page{% endblock %}
+{% block title %}Новая категория{% endblock %}
 {% block content %}
   <h2>Новая категория</h2>
 
-  <form action="/categories/" method="post">
+  <form action="" method="post">
     <label for="title">Полное название:</label><br>
     <input type="text" id="title" name="title" value=""><br>
     <label for="short_title">Короткое название:</label><br>
     <input type="text" id="short_title" name="short_title" value=""><br>
     <label for="desc">Описание:</label><br>
     <textarea id="desc" name="desc"></textarea><br><br>
-    <input type="submit" value="Создать">
+    <input type="submit" class="btn btn-primary" value="Создать">
   </form>
 
 {% endblock %}

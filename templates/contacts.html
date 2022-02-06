@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% block title %}About Page{% endblock %}
+{% block title %}Контакты{% endblock %}
 {% block content %}
-  <h2>Contact Us</h2>
+  <h2>Свяжитесь с нами</h2>
 
   <form action="" method="post">
     <label for="email">E-Mail:</label><br>
     <input type="text" id="email" name="email" value="johndoe@mail.com"><br>
-    <label for="msg">Message:</label><br>
+    <label for="msg">Сообщение:</label><br>
     <textarea id="msg" name="msg">Message</textarea><br><br>
-    <input type="submit" value="Send">
+    <input type="submit" class="btn btn-primary" value="Отправить">
   </form>
 
   <p>{{request.data.email}} {{request.data.msg}}</p>

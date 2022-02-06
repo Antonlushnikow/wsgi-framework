@@ -1,6 +1,6 @@
 from framework.wsgi import Application
-from controllers.page_controllers import IndexPage, AboutPage, ContactsPage, CategoriesPage, AddCourseCategory, \
-    CoursesPage, AddCourse
+from controllers.page_controllers import IndexPage, AboutPage, ContactsPage, CategoriesPage, AddCategory, \
+    CoursesPage, AddCourse, CloneCourse
 from controllers.front_controllers import AddToken
 
 routes = {
@@ -8,9 +8,10 @@ routes = {
     '/about/': AboutPage(),
     '/contacts/': ContactsPage(),
     '/categories/': CategoriesPage(),
-    '/addcategory/': AddCourseCategory(),
+    '/addcategory/': AddCategory(),
     '/courses/': CoursesPage(),
-    '/addcourse/': AddCourse()
+    '/addcourse/': AddCourse(),
+    '/clonecourse/': CloneCourse()
 }
 
 front_controllers = [
