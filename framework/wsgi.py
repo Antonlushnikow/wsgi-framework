@@ -1,11 +1,12 @@
 from controllers.front_controllers import AddSlash
 from framework.template_controllers import NotFoundPage
 from framework.utils import parse_params, parse_post_data
+from patterns.singleton import Singleton
 
 
-class Application:
-    def __init__(self, routes, front_controllers):
-        self.routes = routes
+class Application(metaclass=Singleton):
+    def __init__(self, routes={}, front_controllers=[]):
+        self.routes = {}
         self.front_controllers = front_controllers
 
     def __call__(self, environ, start_response):
@@ -25,6 +26,7 @@ class Application:
         path = environ['PATH_INFO']
         add_slash = AddSlash()
         path = add_slash(path)
+
         if path in self.routes:
             controller = self.routes[path]
             for front in self.front_controllers:
@@ -35,3 +37,10 @@ class Application:
 
         start_response(code, [('Content-Type', 'text/html')])
         return [body]
+
+    def route(self, url):
+        def decorator(cls):
+            self.routes[url] = cls()
+            print(self.routes)
+            return cls
+        return decorator

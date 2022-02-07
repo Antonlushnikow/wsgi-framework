@@ -1,5 +1,6 @@
 from framework.template_controllers import BaseController
 from framework.templator import render
+from framework.wsgi import Application
 from logger import Logger
 from models.models import Course, Category, CourseBuilder
 from patterns.decorator import class_debug
@@ -7,6 +8,9 @@ from patterns.decorator import class_debug
 
 logger_browsing = Logger('browsing')  # переход по страницам
 logger_actions = Logger('actions')  # действия с данными
+
+
+app = Application()
 
 
 @class_debug
@@ -22,6 +26,7 @@ class PageController(BaseController):
 
 
 @class_debug
+@app.route('/')
 class IndexPage(PageController):
     def __init__(self):
         super().__init__()
@@ -29,6 +34,7 @@ class IndexPage(PageController):
 
 
 @class_debug
+@app.route('/about/')
 class AboutPage(PageController):
     def __init__(self):
         super().__init__()
@@ -36,6 +42,7 @@ class AboutPage(PageController):
 
 
 @class_debug
+@app.route('/contacts/')
 class ContactsPage(PageController):
     def __call__(self, request):
         if request['method'] == 'POST':
@@ -50,6 +57,7 @@ class ContactsPage(PageController):
 
 
 @class_debug
+@app.route('/categories/')
 class CategoriesPage(PageController):
     def __init__(self):
         super().__init__()
@@ -62,6 +70,7 @@ class CategoriesPage(PageController):
 
 
 @class_debug
+@app.route('/addcategory/')
 class AddCategory(PageController):
     def __init__(self):
         super().__init__()
@@ -83,6 +92,7 @@ class AddCategory(PageController):
 
 
 @class_debug
+@app.route('/courses/')
 class CoursesPage(PageController):
     def __init__(self):
         super().__init__()
@@ -95,6 +105,7 @@ class CoursesPage(PageController):
 
 
 @class_debug
+@app.route('/addcourse/')
 class AddCourse(PageController):
     def __call__(self, request):
         if request['method'] == 'POST':
@@ -115,6 +126,7 @@ class AddCourse(PageController):
 
 
 @class_debug
+@app.route('/clonecourse/')
 class CloneCourse(PageController):
     def __init__(self):
         super().__init__()
