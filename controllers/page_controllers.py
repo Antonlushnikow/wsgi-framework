@@ -2,12 +2,14 @@ from framework.template_controllers import BaseController
 from framework.templator import render
 from logger import Logger
 from models.models import Course, Category, CourseBuilder
+from patterns.decorator import class_debug
 
 
 logger_browsing = Logger('browsing')  # переход по страницам
 logger_actions = Logger('actions')  # действия с данными
 
 
+@class_debug
 class PageController(BaseController):
     def __call__(self, *args, **kwargs):
         """Добавляем логирование"""
@@ -19,18 +21,21 @@ class PageController(BaseController):
         return self.__call__(request)
 
 
+@class_debug
 class IndexPage(PageController):
     def __init__(self):
         super().__init__()
         self.url = 'index.html'
 
 
+@class_debug
 class AboutPage(PageController):
     def __init__(self):
         super().__init__()
         self.url = 'about.html'
 
 
+@class_debug
 class ContactsPage(PageController):
     def __call__(self, request):
         if request['method'] == 'POST':
@@ -44,6 +49,7 @@ class ContactsPage(PageController):
         return self.response, body.encode()
 
 
+@class_debug
 class CategoriesPage(PageController):
     def __init__(self):
         super().__init__()
@@ -55,6 +61,7 @@ class CategoriesPage(PageController):
         return self.response, body.encode()
 
 
+@class_debug
 class AddCategory(PageController):
     def __init__(self):
         super().__init__()
@@ -75,6 +82,7 @@ class AddCategory(PageController):
         return self.response, body.encode()
 
 
+@class_debug
 class CoursesPage(PageController):
     def __init__(self):
         super().__init__()
@@ -86,6 +94,7 @@ class CoursesPage(PageController):
         return self.response, body.encode()
 
 
+@class_debug
 class AddCourse(PageController):
     def __call__(self, request):
         if request['method'] == 'POST':
@@ -105,6 +114,7 @@ class AddCourse(PageController):
         return self.response, body.encode()
 
 
+@class_debug
 class CloneCourse(PageController):
     def __init__(self):
         super().__init__()
