@@ -7,12 +7,21 @@ JSON_PATH = 'data'
 
 def load_data(filename) -> list:
     filename = f'{JSON_PATH}/{filename}'
-    with open(filename) as f:
-        return json.load(f)
+    try:
+        with open(filename) as f:
+            return json.load(f)
+    except FileNotFoundError:
+        with open(filename, 'x') as f:
+            f.write('[]')
+        return []
 
 
 def save_data(filename, json_data):
+    last_id = len(load_data(filename))
+    print(f'{last_id} - last_id')
+
     filename = f'{JSON_PATH}/{filename}'
+
     with open(filename, 'w') as f:
         json.dump(json_data, f, indent=4)
 
@@ -37,6 +46,11 @@ class CRUD:
                 return row
         return {}
 
+    @classmethod
+    def get_id(cls) -> int:
+        return len(cls.get_all()) + 1
+
+
     @staticmethod
     def save_to_file(model, data):
         """
@@ -52,14 +66,16 @@ class BaseModel(CRUD):
         """
         Сохраняет словарь аттрибутов объекта в файл
         """
-        self.save_to_file(self.__class__.__name__, self.__dict__)
+        new_item_dict = {'id': self.__class__.get_id()}
+        new_item_dict.update(self.__dict__)
+        self.save_to_file(self.__class__.__name__, new_item_dict)
 
 
 class Person(BaseModel):
-    def __init__(self, firstname, lastname, info=None):
-        self.firstname = firstname
+    def __init__(self, firstname, lastname, email):
         self.lastname = lastname
-        self.info = info
+        self.firstname = firstname
+        self.email = email
 
     def __str__(self):
         return f'{self.firstname} {self.lastname}'

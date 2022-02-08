@@ -2,7 +2,7 @@ from framework.template_controllers import BaseController
 from framework.templator import render
 from framework.wsgi import Application
 from logger import Logger
-from models.models import Course, Category, CourseBuilder
+from models.models import Course, Category, CourseBuilder, Student, Client
 from patterns.decorator import class_debug
 
 
@@ -11,6 +11,7 @@ logger_actions = Logger('actions')  # действия с данными
 
 
 app = Application()
+client = Client()
 
 
 @class_debug
@@ -151,4 +152,60 @@ class CloneCourse(PageController):
 
         data = Course.get_all()
         body = render(self.url, object_list=self.object_list, data=data, request=request)
+        return self.response, body.encode()
+
+
+@class_debug
+@app.route('/students/')
+class StudentsPage(PageController):
+    def __init__(self):
+        super().__init__()
+        self.url = 'students.html'
+
+    def __call__(self, request):
+        data = Student.get_all()
+        body = render(self.url, data=data, request=request)
+        return self.response, body.encode()
+
+
+@class_debug
+@app.route('/addstudent/')
+class AddStudent(PageController):
+    def __call__(self, request):
+        if request['method'] == 'POST':
+
+            student = client.create_user('student',
+                               request['data']['firstname'],
+                               request['data']['lastname'],
+                               request['data']['email']
+                                         )
+            student.save()
+            logger_actions.log(f'New student {request["data"]["lastname"]} was added')
+            return StudentsPage().redirect(request)
+
+        self.url = 'new-student.html'
+        body = render(self.url, object_list=self.object_list, request=request)
+        return self.response, body.encode()
+
+
+@class_debug
+@app.route('/courses/enroll/')
+class EnrollPage(PageController):
+    def __init__(self):
+        super().__init__()
+        self.url = 'enroll_.html'
+
+    def __call__(self, request):
+        # if request['method'] == 'POST':
+        #
+        #     student = client.create_user('student',
+        #                        request['data']['firstname'],
+        #                        request['data']['lastname'],
+        #                        request['data']['email']
+        #                                  )
+        #     student.save()
+        #     logger_actions.log(f'New student {request["data"]["lastname"]} was added')
+        #     return StudentsPage().redirect(request)
+
+        body = render(self.url, object_list=self.object_list, request=request)
         return self.response, body.encode()

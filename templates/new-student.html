@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Новый студент{% endblock %}
+{% block content %}
+  <h2>Регистрация студента</h2>
+
+  <form action="" method="post">
+    <label for="firstname">Имя:</label><br>
+    <input type="text" id="firstname" name="firstname" value="Anton"><br>
+    <label for="lastname">Фамилия:</label><br>
+    <input type="text" id="lastname" name="lastname" value="Lushnikov"><br>
+    <label for="email">Эл.почта:</label><br>
+    <input type="email" id="email" name="email" value="test@test.ru"><br>
+    <br>
+    <input type="submit" class="btn btn-primary" value="Создать">
+  </form>
+
+{% endblock %}
