@@ -2,18 +2,19 @@
 {% block title %}Новый курс{% endblock %}
 {% block content %}
   <h2>Запись на курс</h2>
-{{ request.id }}
+
 {{ data }}
   <form action="" method="post">
     <label for="title">Название курса:</label><br>
-    <input type="text" id="title" name="title" value="{{ course.title }}"><br>
+    <div>{{ course.title }}</div><br>
+    <input type="hidden" name="course_id" value="{{ request.id }}">
     <label for="student">Студент:</label><br>
-    <select id="student" name="student">
+    <select id="student" name="student_id">
       {% for student in students %}
-      <option> {{ student.lastname }} </option>
+      <option value="{{ student.id }}"> {{ student.firstname }} {{ student.lastname }} </option>
       {% endfor %}
     </select><br>
-
+    <br>
     <input type="submit" class="btn btn-primary" value="Записать">
   </form>
 

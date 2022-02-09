@@ -1,5 +1,6 @@
 import json
 from patterns.prototype import PrototypeMixin
+from patterns.observer import CourseChangeObserver, ObservedSubject
 
 
 JSON_PATH = 'data'
@@ -18,7 +19,6 @@ def load_data(filename) -> list:
 
 def save_data(filename, json_data):
     last_id = len(load_data(filename))
-    print(f'{last_id} - last_id')
 
     filename = f'{JSON_PATH}/{filename}'
 
@@ -62,17 +62,36 @@ class CRUD:
 
 
 class BaseModel(CRUD):
+    _objects = []
+    def __init__(self, id=None):
+        self.id = id
+
     def save(self):
         """
         Сохраняет словарь аттрибутов объекта в файл
         """
-        new_item_dict = {'id': self.__class__.get_id()}
-        new_item_dict.update(self.__dict__)
-        self.save_to_file(self.__class__.__name__, new_item_dict)
+        self.id = self.__class__.get_id()
+        self.save_to_file(self.__class__.__name__, self.__dict__)
+
+    @classmethod
+    def create_objects(cls):
+        """
+        Создает объекты класса по данным JSON
+        """
+        json_data = cls.get_all()
+        for dict_ in json_data:
+            cls._objects.append(cls(**dict_))
+
+    @classmethod
+    def get_all_objects(cls):
+        cls._objects = []
+        cls.create_objects()
+        return cls._objects
 
 
 class Person(BaseModel):
-    def __init__(self, firstname, lastname, email):
+    def __init__(self, firstname, lastname, email, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.lastname = lastname
         self.firstname = firstname
         self.email = email
@@ -107,7 +126,8 @@ class Client:
 
 
 class Category(BaseModel):
-    def __init__(self, title, short_title, description):
+    def __init__(self, title, short_title, description, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.title = title
         self.short_title = short_title
         self.description = description
@@ -117,32 +137,44 @@ class Category(BaseModel):
 
 
 class Course(BaseModel, PrototypeMixin):
+    def __init__(self, title, category, description, *args, **kwargs):
+        BaseModel.__init__(self, *args, **kwargs)
+        # ObservedSubject.__init__(self)
+        self.title = title
+        self.category = category
+        self.description = description
+
     def __str__(self):
         return f'{self.title}'
 
+    def update(self, **new_data):
+        self.title = new_data['title']
+        self._notify()
 
-class CourseBuilder:
-    def __init__(self):
-        self.course = Course()
 
-    def title(self, title):
-        self.course.title = title
-        return self
-
-    def category(self, category):
-        self.course.category = category
-        return self
-
-    def description(self, description):
-        self.course.description = description
-        return self
-
-    def build(self):
-        return self.course
+# class CourseBuilder:
+#     def __init__(self):
+#         self.course = Course()
+#
+#     def title(self, title):
+#         self.course.title = title
+#         return self
+#
+#     def category(self, category):
+#         self.course.category = category
+#         return self
+#
+#     def description(self, description):
+#         self.course.description = description
+#         return self
+#
+#     def build(self):
+#         return self.course
 
 
 class CourseStudent(BaseModel):
-    def __init__(self, course_id, student_id):
+    def __init__(self, course_id, student_id, *args, ** kwargs):
+        super().__init__(*args, **kwargs)
         self.course_id = course_id
         self.student_id = student_id
 
@@ -154,3 +186,12 @@ FILES = {
     'Course': 'courses.json',
     'CourseStudent': 'course_student.json',
 }
+
+
+if __name__ == '__main__':
+    course = Course('324', '2', '234234')
+    course.attach(CourseChangeObserver())
+    course.update()
+
+
+

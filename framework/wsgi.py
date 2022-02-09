@@ -58,9 +58,3 @@ class Application(metaclass=Singleton):
 
             return cls
         return decorator
-
-path = '/enroll/dsfsdf/'
-arg = re.search(r'\b\d+', path)
-new_path = re.search(r'\D+\b', path)
-
-print(arg, new_path)

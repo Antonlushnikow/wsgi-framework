@@ -2,7 +2,7 @@ from framework.template_controllers import BaseController
 from framework.templator import render
 from framework.wsgi import Application
 from logger import Logger
-from models.models import Course, Category, CourseBuilder, Student, Client, CourseStudent
+from models.models import Course, Category, Student, Client, CourseStudent
 from patterns.decorator import class_debug
 
 
@@ -65,7 +65,7 @@ class CategoriesPage(PageController):
         self.url = 'categories.html'
 
     def __call__(self, request):
-        data = Category.get_all()
+        data = Category.get_all_objects()
         body = render(self.url, data=data, request=request)
         return self.response, body.encode()
 
@@ -100,7 +100,7 @@ class CoursesPage(PageController):
         self.url = 'courses.html'
 
     def __call__(self, request):
-        data = Course.get_all()
+        data = Course.get_all_objects()
         body = render(self.url, data=data, request=request)
         return self.response, body.encode()
 
@@ -110,19 +110,55 @@ class CoursesPage(PageController):
 class AddCourse(PageController):
     def __call__(self, request):
         if request['method'] == 'POST':
-            course = CourseBuilder(). \
-                title(request["data"]["title"]). \
-                category(request["data"]["category"]). \
-                description(request["data"]["desc"]). \
-                build()
+            # course = CourseBuilder(). \
+            #     title(request["data"]["title"]). \
+            #     category(request["data"]["category"]). \
+            #     description(request["data"]["desc"]). \
+            #     build()
+            course = Course(
+                request["data"]["title"],
+                request["data"]["category"],
+                request["data"]["desc"]
+            )
 
             course.save()
             logger_actions.log(f'New course {request["data"]["title"]} was added')
             return CoursesPage().redirect(request)
 
         self.url = 'new-course.html'
-        data = Category.get_all()
+        data = Category.get_all_objects()
         body = render(self.url, object_list=self.object_list, data=data, request=request)
+        return self.response, body.encode()
+
+
+@class_debug
+@app.route('/courses/update/')
+class UpdateCourse(PageController):
+    def __call__(self, request):
+        if request['method'] == 'POST':
+            print(request['id'])
+            course = Course.get_by_key('id', request['id'])
+            # course = Course(
+            #     request["data"]["title"],
+            #     request["data"]["category"],
+            #     request["data"]["desc"]
+            # )
+            #
+            # course.save()
+            # logger_actions.log(f'Сourse {request["data"]["title"]} was updated')
+            new_data = {
+                'title': request["data"]["title"],
+                'category': request["data"]["category"],
+                'description': request["data"]["desc"]
+            }
+            course.update(**new_data)
+            # return CoursesPage().redirect(request)
+
+        self.url = 'update-course.html'
+        id = int(request['id'])
+        course = Course.get_by_key('id', id)
+        data = Category.get_all_objects()
+        body = render(self.url, object_list=self.object_list, course=course, data=data, request=request)
         return self.response, body.encode()
 
 
@@ -138,11 +174,11 @@ class CloneCourse(PageController):
             original_title = request["data"]["course"]
             original_dict = Course.get_by_key('title', original_title)
 
-            original_course = CourseBuilder().\
-                title(f"CLONED_{original_dict['title']}").\
-                category(original_dict['category']).\
-                description(original_dict['description']).\
-                build()
+            original_course = Course(
+                f"CLONED_{original_dict['title']}",
+                original_dict['category'],
+                original_dict['description']
+                )
 
             prototype_course = original_course.clone()
             prototype_course.save()
@@ -150,7 +186,7 @@ class CloneCourse(PageController):
 
             return CoursesPage().redirect(request)
 
-        data = Course.get_all()
+        data = Course.get_all_objects()
         body = render(self.url, object_list=self.object_list, data=data, request=request)
         return self.response, body.encode()
 
@@ -163,7 +199,7 @@ class StudentsPage(PageController):
         self.url = 'students.html'
 
     def __call__(self, request):
-        data = Student.get_all()
+        data = Student.get_all_objects()
         body = render(self.url, data=data, request=request)
         return self.response, body.encode()
 
@@ -198,8 +234,8 @@ class EnrollPage(PageController):
     def __call__(self, request):
         if request['method'] == 'POST':
             course_student = CourseStudent(
-                request['data']['title'],
-                request['data']['student']
+                request['data']['course_id'],
+                request['data']['student_id']
             )
             course_student.save()
 
@@ -207,6 +243,7 @@ class EnrollPage(PageController):
 
         id = int(request['id'])
         course = Course.get_by_key('id', id)
-        students = Student.get_all()
+        # students = Student.get_all()
+        students = Student.get_all_objects()
         body = render(self.url, object_list=self.object_list, course=course, students=students, request=request)
         return self.response, body.encode()
