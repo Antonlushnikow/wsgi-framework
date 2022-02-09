@@ -33,7 +33,7 @@ class Application(metaclass=Singleton):
         add_slash = AddSlash()
         path = add_slash(path)
 
-        print(self.routes)
+        # print(self.routes)
 
         if path in self.routes:
             controller = self.routes[path]

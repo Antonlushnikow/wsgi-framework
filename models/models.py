@@ -141,9 +141,16 @@ class CourseBuilder:
         return self.course
 
 
+class CourseStudent(BaseModel):
+    def __init__(self, course_id, student_id):
+        self.course_id = course_id
+        self.student_id = student_id
+
+
 FILES = {
     'Student': 'students.json',
     'Teacher': 'teachers.json',
     'Category': 'categories.json',
     'Course': 'courses.json',
+    'CourseStudent': 'course_student.json',
 }

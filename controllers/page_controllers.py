@@ -2,7 +2,7 @@ from framework.template_controllers import BaseController
 from framework.templator import render
 from framework.wsgi import Application
 from logger import Logger
-from models.models import Course, Category, CourseBuilder, Student, Client
+from models.models import Course, Category, CourseBuilder, Student, Client, CourseStudent
 from patterns.decorator import class_debug
 
 
@@ -193,19 +193,20 @@ class AddStudent(PageController):
 class EnrollPage(PageController):
     def __init__(self):
         super().__init__()
-        self.url = 'enroll_.html'
+        self.url = 'enroll.html'
 
     def __call__(self, request):
-        # if request['method'] == 'POST':
-        #
-        #     student = client.create_user('student',
-        #                        request['data']['firstname'],
-        #                        request['data']['lastname'],
-        #                        request['data']['email']
-        #                                  )
-        #     student.save()
-        #     logger_actions.log(f'New student {request["data"]["lastname"]} was added')
-        #     return StudentsPage().redirect(request)
+        if request['method'] == 'POST':
+            course_student = CourseStudent(
+                request['data']['title'],
+                request['data']['student']
+            )
+            course_student.save()
 
-        body = render(self.url, object_list=self.object_list, request=request)
+            return CoursesPage().redirect(request)
+
+        id = int(request['id'])
+        course = Course.get_by_key('id', id)
+        students = Student.get_all()
+        body = render(self.url, object_list=self.object_list, course=course, students=students, request=request)
         return self.response, body.encode()
