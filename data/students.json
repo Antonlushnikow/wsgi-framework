@@ -1,17 +1,5 @@
 [
     {
-        "id": 1,
-        "lastname": "Lushnikov",
-        "firstname": "Anton",
-        "email": "test@test.ru"
-    },
-    {
-        "id": 2,
-        "lastname": "Lushnikov2",
-        "firstname": "Anton",
-        "email": "test@test.ru"
-    },
-    {
         "lastname": "Lushnikov3",
         "firstname": "Anton",
         "email": "test@test.ru",

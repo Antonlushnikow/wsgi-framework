@@ -136,23 +136,20 @@ class AddCourse(PageController):
 class UpdateCourse(PageController):
     def __call__(self, request):
         if request['method'] == 'POST':
-            print(request['id'])
-            course = Course.get_by_key('id', request['id'])
-            # course = Course(
-            #     request["data"]["title"],
-            #     request["data"]["category"],
-            #     request["data"]["desc"]
-            # )
-            #
-            # course.save()
-            # logger_actions.log(f'Сourse {request["data"]["title"]} was updated')
+            print(f'request_id - {request["id"]}')
+            id = int(request["id"])
+            course = Course.create_object_by_id(id)
+            all_students = Student.get_all_objects()
+            for student in all_students:
+                course._observer.attach(student)
+            course._observer.notify()
             new_data = {
                 'title': request["data"]["title"],
                 'category': request["data"]["category"],
                 'description': request["data"]["desc"]
             }
-            course.update(**new_data)
-            # return CoursesPage().redirect(request)
+            course.update_object(id, **new_data)
+            return CoursesPage().redirect(request)
 
         self.url = 'update-course.html'
         id = int(request['id'])
@@ -243,7 +240,6 @@ class EnrollPage(PageController):
 
         id = int(request['id'])
         course = Course.get_by_key('id', id)
-        # students = Student.get_all()
         students = Student.get_all_objects()
         body = render(self.url, object_list=self.object_list, course=course, students=students, request=request)
         return self.response, body.encode()

@@ -1,4 +1,5 @@
 import abc
+from patterns.decorator import class_debug
 
 
 class Observer(metaclass=abc.ABCMeta):
@@ -7,15 +8,17 @@ class Observer(metaclass=abc.ABCMeta):
        self._observer_state = None
 
    @abc.abstractmethod
-   def update(self, arg):
+   def on_update(self, arg):
        pass
 
 
+@class_debug
 class CourseChangeObserver(Observer):
-    def update(self):
-        print(self.__class__.__name__)
+    def on_update(self):
+        print(f'Курс был изменен')
 
 
+@class_debug
 class ObservedSubject:
    def __init__(self):
        self._observers = set()
@@ -29,6 +32,6 @@ class ObservedSubject:
        observer._subject = None
        self._observers.discard(observer)
 
-   def _notify(self):
+   def notify(self):
        for observer in self._observers:
-           observer.update()
+           observer.on_update()

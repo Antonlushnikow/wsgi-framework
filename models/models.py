@@ -1,7 +1,7 @@
 import json
 from patterns.prototype import PrototypeMixin
 from patterns.observer import CourseChangeObserver, ObservedSubject
-
+from patterns.decorator import class_debug
 
 JSON_PATH = 'data'
 
@@ -18,8 +18,6 @@ def load_data(filename) -> list:
 
 
 def save_data(filename, json_data):
-    last_id = len(load_data(filename))
-
     filename = f'{JSON_PATH}/{filename}'
 
     with open(filename, 'w') as f:
@@ -35,7 +33,7 @@ class CRUD:
         return load_data(FILES[cls.__name__])
 
     @classmethod
-    def get_by_key(cls, key, value):
+    def get_by_key(cls, key, value) -> dict:
         """
         Возвращает данные из JSON по конкретному значению
         или пустой словарь
@@ -50,9 +48,8 @@ class CRUD:
     def get_id(cls) -> int:
         return len(cls.get_all()) + 1
 
-
     @staticmethod
-    def save_to_file(model, data):
+    def save_to_file(model, data: dict) -> None:
         """
         Добавляет данные в JSON
         """
@@ -70,8 +67,32 @@ class BaseModel(CRUD):
         """
         Сохраняет словарь аттрибутов объекта в файл
         """
-        self.id = self.__class__.get_id()
-        self.save_to_file(self.__class__.__name__, self.__dict__)
+        if not self.id:
+            self.id = self.__class__.get_id()
+        dict_to_save = {}
+
+        for key, value in self.__dict__.items():
+            if key.startswith('_'):
+                continue
+            dict_to_save[key] = value
+
+        self.save_to_file(self.__class__.__name__, dict_to_save)
+
+    @classmethod
+    def create_object_by_id(cls, id):
+        dict_ = cls.get_by_key('id', id)
+        return cls(**dict_)
+
+    @classmethod
+    def delete_by_id(cls, id: int):
+        json_data = cls.get_all()
+        new_json_data = []
+        for item in json_data:
+            if item['id'] == id:
+                continue
+            new_json_data.append(item)
+        save_data(FILES[cls.__name__], new_json_data)
+
 
     @classmethod
     def create_objects(cls):
@@ -88,6 +109,13 @@ class BaseModel(CRUD):
         cls.create_objects()
         return cls._objects
 
+    @classmethod
+    def update_object(cls, id, **dict_):
+        cls.delete_by_id(id)
+        obj = cls(**dict_)
+        obj.id = id
+        obj.save()
+
 
 class Person(BaseModel):
     def __init__(self, firstname, lastname, email, *args, **kwargs):
@@ -100,8 +128,9 @@ class Person(BaseModel):
         return f'{self.firstname} {self.lastname}'
 
 
-class Student(Person):
-    pass
+class Student(Person, CourseChangeObserver):
+    def on_update(self):
+        print(f'Курс был изменен')
 
 
 class Teacher(Person):
@@ -139,7 +168,7 @@ class Category(BaseModel):
 class Course(BaseModel, PrototypeMixin):
     def __init__(self, title, category, description, *args, **kwargs):
         BaseModel.__init__(self, *args, **kwargs)
-        # ObservedSubject.__init__(self)
+        self._observer = ObservedSubject()
         self.title = title
         self.category = category
         self.description = description
@@ -147,9 +176,7 @@ class Course(BaseModel, PrototypeMixin):
     def __str__(self):
         return f'{self.title}'
 
-    def update(self, **new_data):
-        self.title = new_data['title']
-        self._notify()
+
 
 
 # class CourseBuilder:
@@ -189,9 +216,6 @@ FILES = {
 
 
 if __name__ == '__main__':
-    course = Course('324', '2', '234234')
-    course.attach(CourseChangeObserver())
-    course.update()
-
-
+    JSON_PATH = '../data'
+    _ = Student.get_all_objects()
 
