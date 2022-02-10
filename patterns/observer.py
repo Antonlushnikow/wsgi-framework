@@ -3,26 +3,19 @@ from patterns.decorator import class_debug
 
 
 class Observer(metaclass=abc.ABCMeta):
-   def __init__(self):
-       self._subject = None
-       self._observer_state = None
+    def __init__(self):
+        self._subject = None
 
-   @abc.abstractmethod
-   def on_update(self, arg):
-       pass
-
-
-@class_debug
-class CourseChangeObserver(Observer):
-    def on_update(self):
-        print(f'Курс был изменен')
+    @abc.abstractmethod
+    def on_update(self, *args):
+        pass
 
 
 @class_debug
-class ObservedSubject:
+class ObservableSubject:
    def __init__(self):
        self._observers = set()
-       self._subject_state = None
+       self._subject_name = None
 
    def attach(self, observer):
        observer._subject = self
@@ -34,4 +27,4 @@ class ObservedSubject:
 
    def notify(self):
        for observer in self._observers:
-           observer.on_update()
+           observer.on_update(self._subject_name)
