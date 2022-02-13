@@ -7,10 +7,11 @@
         <div class="card col-3" style="width: 25rem;">
           <div class="card-body">
             <h5 class="card-title">{{ item.title }}</h5>
-            <div class="category-block">{{ item.category }}</div>
+            <div class="category-block">{{ item.cat_title }}</div>
             <p class="card-text">{{ item.description }}</p>
-            <a href="/courses/enroll/{{ item.id }}/" class="btn btn-primary">Записаться</a>
-            <a href="/courses/update/{{ item.id }}/" class="btn btn-primary">Изменить</a>
+            <a href="/courses/enroll/{{ item.id_course }}/" class="btn btn-primary">Записаться</a>
+            <a href="/courses/update/{{ item.id_course }}/" class="btn btn-primary">Изменить</a>
+            <a href="/courses/delete/{{ item.id_course }}/" class="btn btn-primary">Удалить</a>
           </div>
         </div>
      {% endfor %}

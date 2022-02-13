@@ -7,11 +7,11 @@
   <form action="" method="post">
     <label for="title">Название курса:</label><br>
     <div>{{ course.title }}</div><br>
-    <input type="hidden" name="course_id" value="{{ request.id }}">
+    <input type="hidden" name="id_course" value="{{ course.id_course }}">
     <label for="student">Студент:</label><br>
-    <select id="student" name="student_id">
+    <select id="student" name="id_student">
       {% for student in students %}
-      <option value="{{ student.id }}"> {{ student.firstname }} {{ student.lastname }} </option>
+      <option value="{{ student.id_person }}"> {{ student.firstname }} {{ student.lastname }} </option>
       {% endfor %}
     </select><br>
     <br>

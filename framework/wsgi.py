@@ -14,7 +14,10 @@ class Application(metaclass=Singleton):
     def __call__(self, environ, start_response):
         request = {}
         data = {}
-
+        print(environ)
+        print(start_response)
+        self.start_response = start_response
+        self.environ = environ
         method = environ['REQUEST_METHOD']
         if method == 'GET':
             data = parse_params(environ['QUERY_STRING'])
@@ -47,6 +50,7 @@ class Application(metaclass=Singleton):
 
         start_response(code, [('Content-Type', 'text/html')])
         return [body]
+
 
     def route(self, url):
         def decorator(cls):

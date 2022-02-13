@@ -5,9 +5,9 @@
 
   <form action="" method="post">
     <label for="course">Категория:</label><br>
-    <select id="course" name="course">
+    <select id="course" name="id_course">
       {% for item in data %}
-      <option> {{ item.title }} </option>
+      <option value="{{ item.id_course }}"> {{ item.title }} </option>
       {% endfor %}
     </select><br><br>
     <input type="submit" class="btn btn-primary" value="Клонировать">
