@@ -20,3 +20,18 @@ def class_debug(cls):
             dec_method = func_debug(attr, cls)
             setattr(cls, item, dec_method)
     return cls
+
+
+def validate_post_data(cls):
+    old_call = cls.__call__
+    def wrapper_call(*args, **kwargs):
+        request = args[1]
+        request['data']['is_validate'] = True
+        if request['method'] == 'POST':
+            for value in request['data'].values():
+                if not value:
+                    request['data']['is_validate'] = False
+                    break
+        return old_call(*args, **kwargs)
+    cls.__call__ = wrapper_call
+    return cls

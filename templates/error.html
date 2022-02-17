@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Обучающий сайт{% endblock %}
+{% block content %}
+    <p>{{ data.error_msg }}</p>
+    <p><a href="{{ data.try_again_url }}">Попробовать снова</a></p>
+{% endblock %}
