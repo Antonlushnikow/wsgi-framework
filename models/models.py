@@ -128,7 +128,7 @@ class StudentMapper(ClassMapper):
         self.commit()
 
 
-class Category:
+class Category(DomainObject):
     """
     Класс для объектов типа "Категории"
     """

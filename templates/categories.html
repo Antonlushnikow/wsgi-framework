@@ -9,6 +9,7 @@
             <h5 class="card-title">{{ item.title }}</h5>
             <p class="card-text">{{ item.description }}</p>
             <a href="" class="btn btn-primary">Выбрать курс</a>
+            <a href="/categories/delete/{{ item.id_category }}/" class="btn btn-primary">Удалить</a>
           </div>
         </div>
      {% endfor %}

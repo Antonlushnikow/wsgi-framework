@@ -10,6 +10,8 @@ from patterns.decorator import class_debug, validate_post_data
 logger_browsing = Logger('browsing')  # переход по страницам
 logger_actions = Logger('actions')  # действия с данными
 
+NO_CATEGORY_ID = 1
+
 
 class ListController(PageController):
     def __call__(self, request, *args, **kwargs):
@@ -115,6 +117,36 @@ class AddCategory(PageController):
 
         body = render(self.template_name, object_list=self.object_list, request=request)
         return self.response, body.encode()
+
+
+@app.route('/categories/delete/')
+class DeleteCategory(PageController):
+    """
+    Контроллер удаления категории
+    """
+    def __call__(self, request):
+        try:
+            UnitOfWork.new_current()
+            cat_mapper = MapperRegistry.get_mapper_by_name('Category')
+            cour_mapper = MapperRegistry.get_mapper_by_name('Course')
+
+            # помечаем категорию на удаление
+            category = cat_mapper.get_by_id(int(request['id']))
+            category.mark_removed()
+
+            # помечаем соответствующие курсы на смену категории на "Без категории"
+            courses = cour_mapper.get_by_key('id_category', int(request['id']))
+            for item in courses:
+                item.id_category = NO_CATEGORY_ID
+                item.mark_dirty()
+
+            UnitOfWork.get_current().commit()
+        except Exception as e:
+            print(e.args)
+        finally:
+            UnitOfWork.set_current(None)
+
+        return CategoriesPage().redirect(request)
 
 
 @class_debug
@@ -329,6 +361,35 @@ class AddStudent(PageController):
 
         body = render(self.template_name, object_list=self.object_list, request=request)
         return self.response, body.encode()
+
+
+@app.route('/students/delete/')
+class DeleteStudent(PageController):
+    """
+    Контроллер удаления студента
+    """
+    def __call__(self, request):
+        try:
+            UnitOfWork.new_current()
+            stud_mapper = MapperRegistry.get_mapper_by_name('Student')
+            cour_stud_mapper = MapperRegistry.get_mapper_by_name('CourseStudent')
+
+            # помечаем студента на удаление
+            student = stud_mapper.get_by_id(int(request['id']))
+            student.mark_removed()
+
+            # находим записи на удаление из таблицы Курсы-Студенты
+            courses_students = cour_stud_mapper.get_by_key('id_student', int(request['id']))
+            for item in courses_students:
+                item.mark_removed()
+
+            UnitOfWork.get_current().commit()
+        except Exception as e:
+            print(e.args)
+        finally:
+            UnitOfWork.set_current(None)
+
+        return StudentsPage().redirect(request)
 
 
 class ErrorHandler(PageController):
